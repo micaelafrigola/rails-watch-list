@@ -1,17 +1,18 @@
 <%= link_to "My lists", lists_path, class: "btn btn-primary" %>
 <h1>List: <%= @list.name %></h1>
-
+<%if @list.photo.attached?  %>
+<%= cl_image_tag @list.photo.key, height: 300, width: 400, crop: :fill %>
+<%end %>
 <h2>Bookmarked Movies:</h2>
 <ul>
-  <% @bookmarked_movies.each do |movie| %>
+  <% @list.bookmarks.each do |bookmark| %>
     <li>
-      <h3><%= movie.title %></h3>
-      <p><%= movie.overview %></p>
-      <img src="<%= movie.poster_url %>" alt="<%= movie.title %> Poster">
-      <p>Rating: <%= movie.rating %></p>
-      <% bookmark = Bookmark.find_by movie: movie, list: @list %>
+      <h3><%= bookmark.movie.title %></h3>
+      <p><%= bookmark.movie.overview %></p>
+      <img src="<%= bookmark.movie.poster_url %>" alt="<%= bookmark.movie.title %> Poster">
+      <p>Rating: <%= bookmark.movie.rating %></p>
       <p> <%= bookmark.comment %></p>
-      <%= link_to "Delete", bookmark_path(bookmark),data: {turbo_method: :delete, turbo_confirm: "Are you sure?"} %>
+      <%= link_to "Delete", list_bookmark_path(list_id: @list.id, id: bookmark.id),data: {turbo_method: :delete, turbo_confirm: "Are you sure?"} %>
     </li>
   <% end %>
 </ul>
